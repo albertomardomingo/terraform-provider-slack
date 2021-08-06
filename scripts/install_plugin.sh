@@ -12,7 +12,7 @@ plugins_dir="${HOME}/.terraform.d/plugins"
 
 install_plugin() {
   plugin=$1
-  version=0.0.1
+  version=1.1.9
   plugin_name=terraform-provider-$(basename "${plugin}")
   plugin_location=$(command -v "${plugin_name}")
   echo "Installing Terraform plugin ${plugin}..."
@@ -30,4 +30,4 @@ install_plugin() {
   done
 }
 
-install_plugin "terraform.local.com/pablovarela/slack"
+install_plugin "registry.terraform.io/pablovarela/slack"

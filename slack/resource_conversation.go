@@ -148,15 +148,17 @@ func updateChannelMembers(ctx context.Context, d *schema.ResourceData, client *s
 	for _, currentMember := range channelUsers {
 		if currentMember != channel.Creator && currentMember != apiUserInfo.UserID && !contains(userIds, currentMember) {
 			if err := client.KickUserFromConversationContext(ctx, channelID, currentMember); err != nil {
-				return fmt.Errorf("couldn't kick user from conversation: %w", err)
+				return fmt.Errorf("couldn't kick user %s from conversation: %w", currentMember, err)
 			}
 		}
 	}
 
 	if len(userIds) > 0 {
-		if _, err := client.InviteUsersToConversationContext(ctx, channelID, userIds...); err != nil {
-			if err.Error() != "already_in_channel" {
-				return fmt.Errorf("couldn't invite users to conversation: %w", err)
+		for _, userID := range userIds {
+			if _, err := client.InviteUsersToConversationContext(ctx, channelID, userID); err != nil {
+				if err.Error() != "already_in_channel" {
+					return fmt.Errorf("couldn't invite user %s to conversation: %w", userID, err)
+				}
 			}
 		}
 	}
